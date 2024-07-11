@@ -6,11 +6,13 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.mapscomposesavestateissue.ui.theme.MapsComposeSaveStateIssueTheme
 
 class MainActivity : ComponentActivity() {
@@ -19,29 +21,35 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MapsComposeSaveStateIssueTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                val navController = rememberNavController()
+
+                NavHost(
+                    navController = navController,
+                    startDestination = "map",
+                ) {
+                    composable("map") {
+                        Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                            Button(
+                                onClick = { navController.navigate("detail") },
+                                modifier = Modifier.padding(innerPadding),
+                            ) {
+                                Text("Go to detail page")
+                            }
+                        }
+                    }
+
+                    composable("detail") {
+                        Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                            Button(
+                                onClick = { navController.navigateUp() },
+                                modifier = Modifier.padding(innerPadding),
+                            ) {
+                                Text("Back to map")
+                            }
+                        }
+                    }
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    MapsComposeSaveStateIssueTheme {
-        Greeting("Android")
     }
 }
